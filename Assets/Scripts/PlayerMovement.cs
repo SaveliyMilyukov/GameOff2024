@@ -19,12 +19,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool isGrounded = false;
     private float gravity = -9.81f;
     private Vector3 velocity;
+    [Space(5)]
+    [Header("Blocking")]
+    public bool isBlockingMove = false;
+    public bool isBlockingLook = false;
 
     private void Start()
     {
         cc = GetComponent<CharacterController>();
 
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()
@@ -35,8 +40,8 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f;
         }
 
-        Move();
-        Look();
+        if(!isBlockingMove) Move();
+        if(!isBlockingLook) Look();
     }
 
     private void Look()

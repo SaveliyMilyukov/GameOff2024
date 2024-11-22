@@ -1,0 +1,4 @@
+GridBackground 
+{
+    --grid-background-color: #282828;
+}

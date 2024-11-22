@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3d593f0ed9f2d9499df7f1e859eedb5, type: 3}
+  m_Name: TestNarrative
+  m_EditorClassIdentifier: 
+  nodeLinks:
+  - baseNodeGUID: 9a3db048a3956744f8e8fa8706a698bb
+    portName: Next
+    targetNodeGUID: db238e822c31cfc43961406378109866
+  - baseNodeGUID: db238e822c31cfc43961406378109866
+    portName: Answer A
+    targetNodeGUID: 4973f9cdcc029834995e1c6dc36c740a
+  - baseNodeGUID: db238e822c31cfc43961406378109866
+    portName: Answer B
+    targetNodeGUID: d77044862b4bea544bf940277d8930d9
+  - baseNodeGUID: 4973f9cdcc029834995e1c6dc36c740a
+    portName: End C
+    targetNodeGUID: 5899045bf6d15c04caa6eb0d194d6473
+  - baseNodeGUID: d77044862b4bea544bf940277d8930d9
+    portName: End C
+    targetNodeGUID: 5899045bf6d15c04caa6eb0d194d6473
+  - baseNodeGUID: 4973f9cdcc029834995e1c6dc36c740a
+    portName: End A
+    targetNodeGUID: cbd8a3c4855f8c34ab12ff2b5b596273
+  - baseNodeGUID: d77044862b4bea544bf940277d8930d9
+    portName: End B
+    targetNodeGUID: 832dae969fa845042a70fa5a53635b2c
+  - baseNodeGUID: 832dae969fa845042a70fa5a53635b2c
+    portName: Ok
+    targetNodeGUID: 5899045bf6d15c04caa6eb0d194d6473
+  - baseNodeGUID: cbd8a3c4855f8c34ab12ff2b5b596273
+    portName: Ok
+    targetNodeGUID: 5899045bf6d15c04caa6eb0d194d6473
+  dialogueNodeDatas:
+  - GUID: db238e822c31cfc43961406378109866
+    dialogueText: what do you want
+    nodePosition: {x: 272, y: 200}
+  - GUID: d77044862b4bea544bf940277d8930d9
+    dialogueText: What Next?
+    nodePosition: {x: 700, y: 289}
+  - GUID: 4973f9cdcc029834995e1c6dc36c740a
+    dialogueText: What Next?
+    nodePosition: {x: 680, y: 67}
+  - GUID: cbd8a3c4855f8c34ab12ff2b5b596273
+    dialogueText: End A...
+    nodePosition: {x: 977, y: -29}
+  - GUID: 5899045bf6d15c04caa6eb0d194d6473
+    dialogueText: End
+    nodePosition: {x: 1314, y: 169}
+  - GUID: 832dae969fa845042a70fa5a53635b2c
+    dialogueText: End B...
+    nodePosition: {x: 964, y: 409}
