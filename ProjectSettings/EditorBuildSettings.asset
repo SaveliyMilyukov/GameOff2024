@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/zLastTower.unity
     guid: da85cfc516a44f54e8a40a821f03acc0
+  - enabled: 1
+    path: Assets/Scenes/Factory.unity
+    guid: 5c8c72830f522ee40aa23ca9baa27496
   m_configObjects: {}
