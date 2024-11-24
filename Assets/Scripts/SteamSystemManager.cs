@@ -7,32 +7,40 @@ public class SteamSystemManager : MonoBehaviour
     public SteamSystemPart end;
     public List<SteamSystemPart> passedPipes;
     public bool pathIsExists;
+    public bool haveEmptyExit = false; // Есть ли пустой выход (то есть есть ли труба, которая ведет пар в никуда)
     public int dampersPassed = 0;
+    public int maxDampersCanBeOpened = 1;
+    [Space(5)]
+    public Animator finishAnimator;
 
-    private void Start()
+    public void StartSteam()
     {
-        
-    }
-
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.KeypadMultiply))
-        {
-            CheckSteamPath();
-        }
+        start.FindNeigboursForWholeSystem();
+        Invoke(nameof(CheckSteamPath), 0.5f);
     }
 
     public void CheckSteamPath()
     {
         Debug.Log("Checking steam path...");
 
+        haveEmptyExit = false;
         pathIsExists = false;
         ClearPassedPipes();
         dampersPassed = 0;
         start.LetOffSteam(false);
 
-        Invoke(nameof(ClearPassedPipes), 1f);
+        Invoke(nameof(ShowFinish), 0.75f);
+        //Invoke(nameof(ClearPassedPipes), 1f);
+    }
+
+    public void ShowFinish()
+    {
+        bool isRight = false;
+        if (dampersPassed <= maxDampersCanBeOpened && pathIsExists && !haveEmptyExit) isRight = true;
+
+        finishAnimator.SetBool("HavePath", pathIsExists);
+        finishAnimator.SetBool("IsRight", isRight);
+        finishAnimator.SetTrigger("Try");
     }
 
     public void ClearPassedPipes()

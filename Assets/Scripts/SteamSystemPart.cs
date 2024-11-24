@@ -80,6 +80,14 @@ public class SteamSystemPart : MonoBehaviour
         modelTransform.Rotate(Vector3.up, -90);
     }
 
+    public void StartSteamSystem()
+    {
+        if (!isSteamStart) return;
+        if(mySystem == null) { Debug.LogError(gameObject.name + " pipe haven't system!"); return; }
+
+        mySystem.StartSteam();
+    }
+
     // Пустить пар по соседним трубам
     public void LetOffSteam(bool checkInList_ = true)
     {
@@ -101,17 +109,121 @@ public class SteamSystemPart : MonoBehaviour
             return;
         }
 
-        if (dForward && nForward != null) 
-            if(nForward.nBackward == this && nForward.dBackward) nForward?.LetOffSteam();
+        // Проверка выходов в никуда
+        if(!isSteamStart && !isSteamEnd)
+        {
+            if(dForward && nForward == null ||
+                dForward && !nForward.dBackward)
+            {
+                mySystem.haveEmptyExit = true;
+                Debug.DrawLine(transform.position, transform.position + Vector3.forward * 3, Color.red, 12f, false); Debug.Log("HAVE EMPTY EXIT!");
+                Debug.DrawLine(transform.position, transform.position + Vector3.up * 2, Color.red, 12f, false);
+            }
+            if (dBackward && nBackward == null ||
+                dBackward && !nBackward.dForward)
+            {
+                mySystem.haveEmptyExit = true;
+                Debug.DrawLine(transform.position, transform.position - Vector3.forward * 3, Color.red, 12f, false); Debug.Log("HAVE EMPTY EXIT!");
+                Debug.DrawLine(transform.position, transform.position + Vector3.up * 2, Color.red, 12f, false);
+            }
+            if (dRight && nRight == null ||
+                dRight && !nRight.dLeft)
+            {
+                mySystem.haveEmptyExit = true;
+                Debug.DrawLine(transform.position, transform.position + Vector3.right* 3, Color.red, 12f, false); Debug.Log("HAVE EMPTY EXIT!");
+                Debug.DrawLine(transform.position, transform.position + Vector3.up * 2, Color.red, 12f, false);
+            }
+            if (dLeft && nLeft == null||
+                dLeft && !nLeft.dRight)
+            {
+                mySystem.haveEmptyExit = true;
+                Debug.DrawLine(transform.position, transform.position - Vector3.left * 3, Color.red, 12f, false); Debug.Log("HAVE EMPTY EXIT!");
+                Debug.DrawLine(transform.position, transform.position + Vector3.up * 2, Color.red, 12f, false);
+            }
+        }
+
+        // Проверка соседей
+        if (dForward && nForward != null)
+            if (nForward.nBackward == this && nForward.dBackward) 
+            { 
+                Debug.DrawLine(transform.position, nForward.transform.position, Color.yellow, 7f, false); 
+                nForward.LetOffSteam(); 
+            }
 
         if (dBackward && nBackward != null) 
-            if (nBackward.nForward == this && nBackward.dForward) nBackward?.LetOffSteam();
+            if (nBackward.nForward == this && nBackward.dForward)
+            {
+                Debug.DrawLine(transform.position, nBackward.transform.position, Color.yellow, 7f, false);
+                nBackward.LetOffSteam();
+            }
 
         if (dRight && nRight != null) 
-            if (nRight.nLeft == this && nRight.dLeft) nRight?.LetOffSteam();
+            if (nRight.nLeft == this && nRight.dLeft)
+            {
+                Debug.DrawLine(transform.position, nRight.transform.position, Color.yellow, 7f, false);
+                nRight.LetOffSteam();
+            }
 
         if (dLeft && nLeft != null)
-            if (nLeft.nRight == this && nLeft.dRight) nLeft?.LetOffSteam();
+            if (nLeft.nRight == this && nLeft.dRight)
+            {
+                Debug.DrawLine(transform.position, nLeft.transform.position, Color.yellow, 7f, false);
+                nLeft.LetOffSteam();
+            }
+    }
+
+    public void FindNeigbours()
+    {
+        //if (isDamper) return;
+        
+        SteamSystemPart[] pipes = FindObjectsOfType<SteamSystemPart>();
+        //Debug.Log(gameObject.name + " is trying to find neigbours... pipes count: " + pipes.Length);
+
+        int pipesLooked = 0;
+        for(int i = 0; i < pipes.Length; i++)
+        {
+            if (pipes[i] == this) continue;
+            if (pipes[i].mySystem != mySystem) continue;
+            pipesLooked++;
+
+            if (pipes[i].transform.position.x == transform.position.x &&
+               pipes[i].transform.position.z == transform.position.z + 1) // Сосед впереди
+            {
+                nForward = pipes[i];
+                Debug.DrawLine(transform.position, pipes[i].transform.position, Color.magenta, 7f, false);
+            }
+            else if (pipes[i].transform.position.x == transform.position.x &&
+              pipes[i].transform.position.z == transform.position.z - 1) // Сосед сзади
+            {
+                nBackward = pipes[i];
+                Debug.DrawLine(transform.position, pipes[i].transform.position, Color.magenta, 7f, false);
+            }
+            else if (pipes[i].transform.position.x == transform.position.x + 1 &&
+              pipes[i].transform.position.z == transform.position.z) // Сосед справа
+            {
+                nRight = pipes[i];
+                Debug.DrawLine(transform.position, pipes[i].transform.position, Color.magenta, 7f, false);
+            }
+            else if (pipes[i].transform.position.x == transform.position.x - 1 &&
+              pipes[i].transform.position.z == transform.position.z) // Сосед слева
+            {
+                nLeft = pipes[i];
+                Debug.DrawLine(transform.position, pipes[i].transform.position, Color.magenta, 7f, false);
+            }
+        }
+    }
+
+    public void FindNeigboursForWholeSystem()
+    {
+        SteamSystemPart[] pipes = FindObjectsOfType<SteamSystemPart>();
+
+        for(int i = 0; i < pipes.Length; i++)
+        {
+            if(pipes[i].mySystem == mySystem)
+            {
+                pipes[i].FindNeigbours();
+            }
+        }
     }
 
     // Вывод в редакторе
@@ -121,7 +233,7 @@ public class SteamSystemPart : MonoBehaviour
         if (isDamper) Gizmos.color = Color.blue;
         if (isSteamStart) Gizmos.color = Color.cyan;
         if (isSteamEnd) Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 0.5f);
+        Gizmos.DrawWireSphere(transform.position, 0.25f);
 
         if (dForward) // Если есть выход вперёд
         {
@@ -129,11 +241,12 @@ public class SteamSystemPart : MonoBehaviour
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(transform.position, nForward.transform.position);
+                Gizmos.DrawWireSphere(nForward.transform.position, 0.5f);
             }
             else // Нет соседа
             {
                 Gizmos.color = Color.white;
-                Gizmos.DrawLine(transform.position, transform.position + Vector3.forward);
+                Gizmos.DrawLine(transform.position, transform.position + Vector3.forward * 2.5f);
             }
         }
 
@@ -143,11 +256,12 @@ public class SteamSystemPart : MonoBehaviour
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(transform.position, nBackward.transform.position);
+                Gizmos.DrawWireSphere(nBackward.transform.position, 0.5f);
             }
             else // Нет соседа
             {
                 Gizmos.color = Color.white;
-                Gizmos.DrawLine(transform.position, transform.position + Vector3.back);
+                Gizmos.DrawLine(transform.position, transform.position + Vector3.back * 2.5f);
             }
         }
 
@@ -157,11 +271,12 @@ public class SteamSystemPart : MonoBehaviour
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(transform.position, nRight.transform.position);
+                Gizmos.DrawWireSphere(nRight.transform.position, 0.5f);
             }
             else // Нет соседа
             {
                 Gizmos.color = Color.white;
-                Gizmos.DrawLine(transform.position, transform.position + Vector3.right);
+                Gizmos.DrawLine(transform.position, transform.position + Vector3.right * 2.5f);
             }
         }
 
@@ -171,11 +286,12 @@ public class SteamSystemPart : MonoBehaviour
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(transform.position, nLeft.transform.position);
+                Gizmos.DrawWireSphere(nLeft.transform.position, 0.5f);
             }
             else // Нет соседа
             {
                 Gizmos.color = Color.white;
-                Gizmos.DrawLine(transform.position, transform.position + Vector3.left);
+                Gizmos.DrawLine(transform.position, transform.position + Vector3.left * 2.5f);
             }
         }
 

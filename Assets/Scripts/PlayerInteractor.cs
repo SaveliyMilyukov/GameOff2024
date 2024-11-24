@@ -47,8 +47,9 @@ public class PlayerInteractor : MonoBehaviour
 
                     SteamSystemPart pipe = hitInfo.collider.gameObject.GetComponent<SteamSystemPart>();
                     pipe.outlineTimer = 0.1f;
-                    if (Input.GetKeyDown(KeyCode.R)) pipe.RotateRight();                    
+                    if (Input.GetKeyDown(KeyCode.R)) pipe.RotateRight();
                     else if (Input.GetKeyDown(KeyCode.F)) pipe.RotateLeft();
+                    else if (Input.GetKeyDown(KeyCode.E)) pipe.StartSteamSystem();
                 }
                 else haveInteractbleObject = false;
             }

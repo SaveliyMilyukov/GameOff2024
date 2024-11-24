@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/FactoryPuzzleTest.unity
+    guid: 44027c4abc1e34241b55c0d523929a63
+  - enabled: 1
     path: Assets/Scenes/Logo.unity
     guid: 800ee83ae6d44c548911c08fecaf7637
   - enabled: 1
